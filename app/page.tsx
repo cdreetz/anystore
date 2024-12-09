@@ -32,7 +32,7 @@ export default function RoleSelection() {
               <Label htmlFor="store-name">Enter Store Name</Label>
               <Input
                 id="store-name"
-                placeholder="e.g. Fashion Boutique"
+                placeholder="e.g. Mids-n-Things"
                 value={storeName}
                 onChange={(e) => setStoreName(e.target.value)}
               />
