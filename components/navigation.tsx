@@ -82,34 +82,24 @@ export function StoreOwnerNavigation() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="bg-white shadow">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[240px] sm:w-[300px]">
-                <div className="flex flex-col gap-4 py-4">
-                  <NavLinks routes={storeOwnerRoutes} pathname={pathname} onClick={() => setOpen(false)} />
-                </div>
-              </SheetContent>
-            </Sheet>
-            <div className="hidden md:flex md:items-center">
-              <NavLinks routes={storeOwnerRoutes} pathname={pathname} />
+    <div className="flex-1">
+      <div className="flex items-center">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[240px] sm:w-[300px]">
+            <div className="flex flex-col gap-4 py-4">
+              <NavLinks routes={storeOwnerRoutes} pathname={pathname} onClick={() => setOpen(false)} />
             </div>
-          </div>
-          <div className="flex items-center">
-            <Link href="/">
-              <Button variant="outline">Switch Role</Button>
-            </Link>
-          </div>
+          </SheetContent>
+        </Sheet>
+        <div className="hidden md:flex md:items-center">
+          <NavLinks routes={storeOwnerRoutes} pathname={pathname} />
         </div>
       </div>
-    </nav>
+    </div>
   )
 }
-

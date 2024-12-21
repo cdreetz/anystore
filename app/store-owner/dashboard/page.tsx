@@ -1,83 +1,86 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-import { QrCode, LinkIcon } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-
-function ShareStore() {
-  const [isOpen, setIsOpen] = useState(false)
-  const storeUrl = 'https://example.com/stores/my-store' // Replace with actual store URL
-
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button>Share Store</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Share Your Store</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="flex items-center gap-4">
-            <QrCode size={150} />
-            <div>
-              <p className="text-sm text-muted-foreground">Scan this QR code to visit your store</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <Input value={storeUrl} readOnly />
-            <Button size="icon" onClick={() => navigator.clipboard.writeText(storeUrl)}>
-              <LinkIcon className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
-}
+import { useRouter } from 'next/navigation'
 
 export default function StoreDashboard() {
+  const [userEmail, setUserEmail] = useState<string>('No email')
+  const router = useRouter()
+
+  useEffect(() => {
+    const email = localStorage.getItem('userEmail')
+    if (email) {
+      setUserEmail(email)
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('userEmail')
+    router.push('/store-owner/auth')
+  }
+
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Store Owner Dashboard</h1>
-        <ShareStore />
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-gray-500 text-sm">
+            Welcome back, {userEmail}
+          </p>
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Card className="hover:shadow-lg transition-shadow">
           <CardHeader>
-            <CardTitle>Inventory Management</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <span className="text-blue-600">📦</span>
+              Inventory Management
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p>Manage your product inventory</p>
-            <Link href="/store-owner/inventory">
-              <Button className="mt-2">Go to Inventory</Button>
+          <CardContent className="space-y-2">
+            <p className="text-gray-600">Manage your product inventory, prices, and stock levels</p>
+            <Link href="/store-owner/inventory" className="w-full">
+              <Button className="w-full" variant="outline">
+                Manage Inventory
+              </Button>
             </Link>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="hover:shadow-lg transition-shadow">
           <CardHeader>
-            <CardTitle>Order Management</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <span className="text-green-600">🛍️</span>
+              Order Management
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p>View and manage customer orders</p>
-            <Link href="/store-owner/orders">
-              <Button className="mt-2">Go to Orders</Button>
+          <CardContent className="space-y-2">
+            <p className="text-gray-600">Track, process, and manage all your customer orders</p>
+            <Link href="/store-owner/orders" className="w-full">
+              <Button className="w-full" variant="outline">
+                View Orders
+              </Button>
             </Link>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="hover:shadow-lg transition-shadow">
           <CardHeader>
-            <CardTitle>Store Settings</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <span className="text-purple-600">⚙️</span>
+              Store Settings
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p>Configure your store settings</p>
-            <Link href="/store-owner/settings">
-              <Button className="mt-2">Go to Settings</Button>
+          <CardContent className="space-y-2">
+            <p className="text-gray-600">Customize your store appearance and settings</p>
+            <Link href="/store-owner/settings" className="w-full">
+              <Button className="w-full" variant="outline">
+                Manage Settings
+              </Button>
             </Link>
           </CardContent>
         </Card>
