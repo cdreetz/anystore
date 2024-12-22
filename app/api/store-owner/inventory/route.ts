@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
   }
 
-  const { name, price, inventory, status } = await req.json();
+  const { name, price, inventory, status, imageUrl } = await req.json();
 
   const store = await prisma.store.findFirst({
     where: {
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
       price: parseFloat(price),
       inventory: parseInt(inventory),
       status: status || 'active',
+      imageUrl,
       storeId: store.id
     }
   });
@@ -42,7 +43,7 @@ export async function PUT(req: Request) {
   const url = new URL(req.url);
   const productId = url.pathname.split('/').pop();
 
-  const { name, price, inventory, status } = await req.json();
+  const { name, price, inventory, status, imageUrl } = await req.json();
 
   const product = await prisma.product.findFirst({
     where: {
@@ -63,7 +64,8 @@ export async function PUT(req: Request) {
       name,
       price: parseFloat(price),
       inventory: parseInt(inventory),
-      status
+      status,
+      imageUrl
     }
   });
 
@@ -97,4 +99,33 @@ export async function DELETE(req: Request) {
   });
 
   return NextResponse.json({ success: true });
+}
+
+export async function GET(req: Request) {
+  try {
+    const userPayload = requireAuth(req as any);
+    if (!userPayload?.sub) {
+      return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
+    }
+
+    const store = await prisma.store.findFirst({
+      where: {
+        ownerId: userPayload.sub
+      }
+    });
+
+    if (!store) {
+      return NextResponse.json({ error: 'Store not found' }, { status: 404 });
+    }
+
+    const products = await prisma.product.findMany({
+      where: {
+        storeId: store.id
+      }
+    });
+
+    return NextResponse.json({ products });
+  } catch (error) {
+    return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
+  }
 } 

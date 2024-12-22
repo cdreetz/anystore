@@ -2,8 +2,11 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyPassword } from '@/lib/auth';
 import { signToken } from '@/lib/jwt';
+import { cookies } from 'next/headers';
 
 export async function POST(req: Request) {
+  const cookieStore = await cookies();
+
   try {
     const { email, password } = await req.json();
 
@@ -43,6 +46,10 @@ export async function POST(req: Request) {
       },
       { status: 200 }
     );
+
+    cookieStore.set('token', token)
+    cookieStore.set('userEmail', user.email)
+    cookieStore.set('storeName', user.stores[0]?.name)
 
     response.cookies.set({
       name: 'token',
