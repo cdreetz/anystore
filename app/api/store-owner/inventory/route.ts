@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
   }
 
-  const { name, price, inventory, status, imageUrl } = await req.json();
+  const { name, price, inventory, status } = await req.json();
 
   const store = await prisma.store.findFirst({
     where: {
@@ -26,7 +26,6 @@ export async function POST(req: Request) {
       price: parseFloat(price),
       inventory: parseInt(inventory),
       status: status || 'active',
-      imageUrl,
       storeId: store.id
     }
   });
@@ -43,7 +42,7 @@ export async function PUT(req: Request) {
   const url = new URL(req.url);
   const productId = url.pathname.split('/').pop();
 
-  const { name, price, inventory, status, imageUrl } = await req.json();
+  const { name, price, inventory, status } = await req.json();
 
   const product = await prisma.product.findFirst({
     where: {
@@ -65,7 +64,6 @@ export async function PUT(req: Request) {
       price: parseFloat(price),
       inventory: parseInt(inventory),
       status,
-      imageUrl
     }
   });
 
